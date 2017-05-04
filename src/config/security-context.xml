@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+
+	<security:authentication-manager>
+		<security:ldap-authentication-provider
+			user-search-filter="(uid={0})" user-search-base="ou=users"
+			group-search-filter="(uniqueMember={0})" group-search-base="ou=groups"
+			group-role-attribute="cn" role-prefix="ROLE_" />
+	</security:authentication-manager>
+	<security:ldap-server url="ldap://localhost:8389/o=mojo"
+		manager-dn="uid=admin,ou=system" manager-password="secret" />
+	<security:http use-expressions="true">
+
+
+
+		<security:intercept-url pattern="/workflows"
+			access="isAuthenticated()" />
+		<security:intercept-url pattern="/create"
+			access="isAuthenticated()" />
+		
+
+
+		<security:form-login login-processing-url="/login"/>
+		<security:csrf />
+	</security:http>
+</beans>
